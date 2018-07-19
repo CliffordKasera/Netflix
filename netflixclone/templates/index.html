@@ -1,0 +1,116 @@
+<html>
+
+<head>
+    <title>Movies Assessment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'netflixclone/style.css' %}" />
+    <style>
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: "Lato", sans-serif;
+        }
+
+        body,
+        html {
+            height: 100%;
+            color: #777;
+            line-height: 1.8;
+            background: white url("images/WWDC2017_Beach_preview.jpeg") no-repeat
+        }
+
+        /* Create a Parallax Effect */
+
+        .bgimg-1,
+        .bgimg-2,
+        .bgimg-3 {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* First image (Logo. Full height) */
+
+        .w3-wide {
+            letter-spacing: 10px;
+        }
+
+        .w3-hover-opacity {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="w3-container w3-padding-64" id="user_box">
+        {% if not request.session.user_id%}
+        <form method="POST" action="/login">
+            {% csrf_token %}
+            <label>Username </label>
+            <input type="text" name="username" placeholder="username...">
+            <label>Password </label>
+            <input type="text" name="password" placeholder="password...">
+            <input type="submit" value="Login" />
+        </form>
+        <a href="/register/">Register</a>
+        {% else %}
+        <div>
+            <p>Hi Agent: {{request.session.user_id }}</p>
+            <form method="POST" action="/logout">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{request.session.user_id}}">
+                <input type="submit" value="Logout" />
+            </form>
+        </div>
+
+        {% endif %}
+    </div>
+    <div class="bgimg-3 w3-display-container w3-opacity-min" id="home">
+        <div class="w3-display-middle" style="white-space:nowrap;">
+            <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">MOVIES ASSESSMENT</span>
+        </div>
+    </div>
+    <div id="search_box" class="w3-content w3-container w3-padding-64">
+        <h4>Search for Movies</h4>
+        <form method="GET" action="/search">
+            <label>Search </label>
+            <input type="text" name="query" placeholder="Search...">
+            <input type="submit" value="Search" />
+        </form>
+    </div>
+    <div id="favorites_box" class="w3-content w3-container w3-padding-64">
+        <h4>Favorite Movies</h4>
+        {% if favs %}
+        <ul>
+            {% for movie in favs %}
+            <li>
+                <a href="/detail/{{ movie.id }}">{{ movie.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No Favorites Yet.</p>
+        {% endif %}
+    </div>
+    <div id="latest_movies" class="w3-content w3-container w3-padding-64">
+        <h4>Latest Movie</h4>
+        {% if latest %}
+        <h4>
+            <a href="/detail/{{latest.id}}">{{ latest.title }}</a>
+        </h4>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
